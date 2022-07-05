@@ -11,8 +11,26 @@ let largoPaleta = 75; //Define el largo de la paleta
 let posicionXPaleta = (canvas.width - largoPaleta) / 2; //Define la posicion inicial de la paleta coo el largo del lienzo menos el largo de la paleta dividido 2
 let derechaPresionada = false; //Definicion de variables de teclas presionadas seteadas en false
 let izquierdaPresionada = false;
-let colorPelota='blue'
+let colorPelota='blue'; //Color por defecto de la pelota;
+let cantidadLadrillosFila = 3; //Define la cantidad de ladrillos por fila
+let cantidadLadrillosColumna = 5;  //Define la cantidad de ladrillos por columna
+let largoLadrillo = 75; //Define el largo de los ladrillos
+let altoLadrillo = 20; //Define el alto de los ladrillos
+let paddingLadrillo = 10; //Define la separacion entre ladrillos
+let margenSuperiorLadrillo = 30; //Margenes para que los ladrillos no se dibujen en el borde del lienzo
+let margenIzquierdoLadrillo = 30; //Margenes para que los ladrillos no se dibujen en el borde del lienzo
 
+//Guarda los ladrillos en una matriz bidimensional que contendrá las columnas (c) de los ladrillos. 
+//Cada columna contendrá, a su vez, toda la fila (f) de ladrillos. Cada ladrillo se va a representar con un objeto con las posiciones "x" e "y" en las que se dibujará
+let ladrillos = [];
+for(c=0; c < cantidadLadrillosColumna; c++) {
+    ladrillos[c] = [];
+    for(f=0; f < cantidadLadrillosFila; f++) {
+        ladrillos[c][f] = { x: 0, y: 0 };
+    }
+}
+
+//Generador de colores aleatorios en hexadecimal
 function generarNuevoColor(){
 	let simbolos, color;
 	simbolos = "0123456789ABCDEF";
@@ -24,6 +42,22 @@ function generarNuevoColor(){
     colorPelota=color;
 }
 
+function dibujarLadrillos() {
+    for(c=0; c < cantidadLadrillosColumna; c++) {
+        for(f=0; f < cantidadLadrillosFila; f++) {
+            
+            let posicionLadrilloX = (c*(largoLadrillo+paddingLadrillo))+margenSuperiorLadrillo;
+            let posicionLadrilloY = (f*(altoLadrillo+paddingLadrillo))+margenIzquierdoLadrillo;
+            ladrillos[c][f].x = posicionLadrilloX;
+            ladrillos[c][f].y = posicionLadrilloY;
+            ctx.beginPath();
+            ctx.rect(posicionLadrilloX, posicionLadrilloY, largoLadrillo, altoLadrillo);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+}
 function dibujarPelota() {
 
     ctx.beginPath();
@@ -48,6 +82,7 @@ function dibujar() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Se borrara cuanquier cosa dibujada antes en toda el area seleccionada de los primeros dos valores (x,y)
     dibujarPelota(); //Se llama a la funcion dibujar pelota
     dibujarPaleta();
+    dibujarLadrillos();
     
     //Agregando sistema de colision simple
 
@@ -56,8 +91,9 @@ function dibujar() {
 
     if (x + dx >= canvas.width - radioPelota || x + dx <= radioPelota) {
         dx = -dx;
+        //Llamado de funcion para generar color aleatorio
         generarNuevoColor();
-        console.log(colorPelota);
+        
 
     }
     //Cuando la posicion en y + el diferencial de y sea mayor o igual que el alto del lienzo menos el radio de la pelota
@@ -65,8 +101,9 @@ function dibujar() {
 
     if (y + dy <= radioPelota) {
         dy = -dy
+        //Llamado de funcion para generar color aleatorio
         generarNuevoColor();
-        console.log(colorPelota);
+        
     }
 
     //Aplicando final del juego y colision de paleta
@@ -100,7 +137,7 @@ function dibujar() {
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
-//Funcion que detecta si una tecla esta presionada
+//Funcion que se ejecuta cuando la flecha derecha o la izquierda esta presionada
 function keyDownHandler(e) {
     if (e.keyCode == 39) {
         derechaPresionada = true;
@@ -110,7 +147,7 @@ function keyDownHandler(e) {
     }
 }
 
-//Funcion que detecta si 
+//Funcion funcion que se ejecuta cuando se deja de presionar la flecha derecha o izquierda.
 function keyUpHandler(e) {
     if (e.keyCode == 39) {
         derechaPresionada = false;
