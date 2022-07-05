@@ -11,7 +11,7 @@ let largoPaleta = 75; //Define el largo de la paleta
 let posicionXPaleta = (canvas.width - largoPaleta) / 2; //Define la posicion inicial de la paleta coo el largo del lienzo menos el largo de la paleta dividido 2
 let derechaPresionada = false; //Definicion de variables de teclas presionadas seteadas en false
 let izquierdaPresionada = false;
-let colorPelota='blue'; //Color por defecto de la pelota;
+let colorPelota = 'blue'; //Color por defecto de la pelota;
 let cantidadLadrillosFila = 3; //Define la cantidad de ladrillos por fila
 let cantidadLadrillosColumna = 5;  //Define la cantidad de ladrillos por columna
 let largoLadrillo = 75; //Define el largo de los ladrillos
@@ -23,38 +23,54 @@ let margenIzquierdoLadrillo = 30; //Margenes para que los ladrillos no se dibuje
 //Guarda los ladrillos en una matriz bidimensional que contendrá las columnas (c) de los ladrillos. 
 //Cada columna contendrá, a su vez, toda la fila (f) de ladrillos. Cada ladrillo se va a representar con un objeto con las posiciones "x" e "y" en las que se dibujará
 let ladrillos = [];
-for(c=0; c < cantidadLadrillosColumna; c++) {
+for (c = 0; c < cantidadLadrillosColumna; c++) {
     ladrillos[c] = [];
-    for(f=0; f < cantidadLadrillosFila; f++) {
-        ladrillos[c][f] = { x: 0, y: 0 };
+    for (f = 0; f < cantidadLadrillosFila; f++) {
+        ladrillos[c][f] = { x: 0, y: 0, status: 1 };
     }
 }
 
+//Deteccion de colisiones de la pelota con los ladrillos
+//Conmpara la posicion de cada ladrillo con la pelota y cambia la direccion de la pelota
+function deteccionColisiones() {
+    for (c = 0; c < cantidadLadrillosColumna; c++) {
+        for (f = 0; f < cantidadLadrillosFila; f++) {
+            let b = ladrillos[c][f]; //Guardo en b la posicion de los ladrillos en la matriz
+            if (b.status == 1) {
+                if (x > b.x && x < b.x + largoLadrillo && y > b.y && y < b.y + altoLadrillo) {
+                    dy = -dy;
+                    b.status = 0;
+                }
+            }
+        }
+    }
+}
 //Generador de colores aleatorios en hexadecimal
-function generarNuevoColor(){
-	let simbolos, color;
-	simbolos = "0123456789ABCDEF";
-	color = "#";
+function generarNuevoColor() {
+    let simbolos, color;
+    simbolos = "0123456789ABCDEF";
+    color = "#";
 
-	for(let i = 0; i < 6; i++){
-		color = color + simbolos[Math.floor(Math.random() * 16)];
-	}
-    colorPelota=color;
+    for (let i = 0; i < 6; i++) {
+        color = color + simbolos[Math.floor(Math.random() * 16)];
+    }
+    colorPelota = color;
 }
 
 function dibujarLadrillos() {
-    for(c=0; c < cantidadLadrillosColumna; c++) {
-        for(f=0; f < cantidadLadrillosFila; f++) {
-            
-            let posicionLadrilloX = (c*(largoLadrillo+paddingLadrillo))+margenSuperiorLadrillo;
-            let posicionLadrilloY = (f*(altoLadrillo+paddingLadrillo))+margenIzquierdoLadrillo;
-            ladrillos[c][f].x = posicionLadrilloX;
-            ladrillos[c][f].y = posicionLadrilloY;
-            ctx.beginPath();
-            ctx.rect(posicionLadrilloX, posicionLadrilloY, largoLadrillo, altoLadrillo);
-            ctx.fillStyle = "#0095DD";
-            ctx.fill();
-            ctx.closePath();
+    for (c = 0; c < cantidadLadrillosColumna; c++) {
+        for (f = 0; f < cantidadLadrillosFila; f++) {
+            if (ladrillos[c][f].status == 1) {
+                let posicionLadrilloX = (c * (largoLadrillo + paddingLadrillo)) + margenSuperiorLadrillo;
+                let posicionLadrilloY = (f * (altoLadrillo + paddingLadrillo)) + margenIzquierdoLadrillo;
+                ladrillos[c][f].x = posicionLadrilloX;
+                ladrillos[c][f].y = posicionLadrilloY;
+                ctx.beginPath();
+                ctx.rect(posicionLadrilloX, posicionLadrilloY, largoLadrillo, altoLadrillo);
+                ctx.fillStyle = "#0095DD";
+                ctx.fill();
+                ctx.closePath();
+            }
         }
     }
 }
@@ -80,10 +96,11 @@ function dibujarPaleta() {
 function dibujar() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Se borrara cuanquier cosa dibujada antes en toda el area seleccionada de los primeros dos valores (x,y)
+    deteccionColisiones()
     dibujarPelota(); //Se llama a la funcion dibujar pelota
     dibujarPaleta();
     dibujarLadrillos();
-    
+
     //Agregando sistema de colision simple
 
     //Cuando la posicion en x + el diferencial de x sea mayor o igual que el ancho del lienzo menos el radio de la pelota 
@@ -93,7 +110,7 @@ function dibujar() {
         dx = -dx;
         //Llamado de funcion para generar color aleatorio
         generarNuevoColor();
-        
+
 
     }
     //Cuando la posicion en y + el diferencial de y sea mayor o igual que el alto del lienzo menos el radio de la pelota
@@ -103,7 +120,7 @@ function dibujar() {
         dy = -dy
         //Llamado de funcion para generar color aleatorio
         generarNuevoColor();
-        
+
     }
 
     //Aplicando final del juego y colision de paleta
@@ -112,7 +129,7 @@ function dibujar() {
 
     else if (y + dy >= canvas.height - radioPelota) {
 
-        if (x  > posicionXPaleta  && x < posicionXPaleta + largoPaleta) {
+        if (x > posicionXPaleta && x < posicionXPaleta + largoPaleta) {
             dy = -dy
         }
         else {
