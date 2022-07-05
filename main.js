@@ -35,11 +35,11 @@ for (c = 0; c < cantidadLadrillosColumna; c++) {
 function deteccionColisiones() {
     for (c = 0; c < cantidadLadrillosColumna; c++) {
         for (f = 0; f < cantidadLadrillosFila; f++) {
-            let b = ladrillos[c][f]; //Guardo en b la posicion de los ladrillos en la matriz
-            if (b.status == 1) {
-                if (x > b.x && x < b.x + largoLadrillo && y > b.y && y < b.y + altoLadrillo) {
-                    dy = -dy;
-                    b.status = 0;
+            let b = ladrillos[c][f]; //Guardo en b la posicion de los ladrillos en la matriz ej b = (x, y) donde x e y son la posicion en sus respectivos ejes
+            if (b.status == 1) { //Si el estado del ladrillo es 1 (dibujado)
+                if (x > b.x && x < b.x + largoLadrillo && y > b.y && y < b.y + altoLadrillo) { 
+                    dy = -dy; //Cambio la direccion de la pelota
+                    b.status = 0; //Cambio el estado del ladrillo a 0 (no dibujado)
                     generarNuevoColor();
                 }
             }
@@ -58,10 +58,11 @@ function generarNuevoColor() {
     colorPelota = color;
 }
 
+//Funcion para dibujar los ladrillos por 
 function dibujarLadrillos() {
     for (c = 0; c < cantidadLadrillosColumna; c++) {
         for (f = 0; f < cantidadLadrillosFila; f++) {
-            if (ladrillos[c][f].status == 1) {
+            if (ladrillos[c][f].status == 1) { 
                 let posicionLadrilloX = (c * (largoLadrillo + paddingLadrillo)) + margenSuperiorLadrillo;
                 let posicionLadrilloY = (f * (altoLadrillo + paddingLadrillo)) + margenIzquierdoLadrillo;
                 ladrillos[c][f].x = posicionLadrilloX;
@@ -97,8 +98,9 @@ function dibujarPaleta() {
 function dibujar() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Se borrara cuanquier cosa dibujada antes en toda el area seleccionada de los primeros dos valores (x,y)
+    //Se llama a todas las funciones
     deteccionColisiones()
-    dibujarPelota(); //Se llama a la funcion dibujar pelota
+    dibujarPelota(); 
     dibujarPaleta();
     dibujarLadrillos();
 
