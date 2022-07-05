@@ -3,8 +3,8 @@ let ctx = canvas.getContext("2d"); // DOMString que contiene el identificador de
 
 let x = canvas.width / 2; //Se define el eje x como la mitad del ancho del lienzo
 let y = canvas.height - 30; //Se define el eje y xon la altura del lienzo mas 30
-let dx = 2; //Definicion de las variaciones del eje x
-let dy = -2; //Definicion de las variaciones del eje y
+let dx = 1; //Definicion de las variaciones del eje x
+let dy = -1; //Definicion de las variaciones del eje y
 let radioPelota = 10; //Definde el radio de la pelota
 let anchoPaleta = 15; //Define el ancho de la paleta
 let largoPaleta = 75; //Define el largo de la paleta
@@ -40,6 +40,7 @@ function deteccionColisiones() {
                 if (x > b.x && x < b.x + largoLadrillo && y > b.y && y < b.y + altoLadrillo) {
                     dy = -dy;
                     b.status = 0;
+                    generarNuevoColor();
                 }
             }
         }
