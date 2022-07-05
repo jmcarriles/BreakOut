@@ -37,7 +37,7 @@ function deteccionColisiones() {
         for (f = 0; f < cantidadLadrillosFila; f++) {
             let b = ladrillos[c][f]; //Guardo en b la posicion de los ladrillos en la matriz ej b = (x, y) donde x e y son la posicion en sus respectivos ejes
             if (b.status == 1) { //Si el estado del ladrillo es 1 (dibujado)
-                if (x > b.x && x < b.x + largoLadrillo && y > b.y && y < b.y + altoLadrillo) { 
+                if (x > b.x && x < b.x + largoLadrillo && y > b.y && y < b.y + altoLadrillo) {  //Analizo 
                     dy = -dy; //Cambio la direccion de la pelota
                     b.status = 0; //Cambio el estado del ladrillo a 0 (no dibujado)
                     generarNuevoColor();
@@ -55,7 +55,7 @@ function generarNuevoColor() {
     for (let i = 0; i < 6; i++) {
         color = color + simbolos[Math.floor(Math.random() * 16)];
     }
-    colorPelota = color;
+    colorPelota = color; //Cambia el color de la pelota por uno aleatorio
 }
 
 //Funcion para dibujar los ladrillos por 
@@ -80,7 +80,7 @@ function dibujarPelota() {
 
     ctx.beginPath();
     ctx.arc(x, y, radioPelota, 0, Math.PI * 2); //Funcion circulo (posicion eje x, posicion eje y, radio del arco, angulos iniciales y finales (en que angulo va a empezar a dibujar el circulo en radianes) )
-    ctx.fillStyle = colorPelota; //Color
+    ctx.fillStyle = colorPelota; //Color de la pelota
     ctx.fill();
     ctx.closePath();
 
@@ -111,7 +111,7 @@ function dibujar() {
 
     if (x + dx >= canvas.width - radioPelota || x + dx <= radioPelota) {
         dx = -dx;
-        //Llamado de funcion para generar color aleatorio
+        //Llamado de funcion para generar color aleatorio 
         generarNuevoColor();
 
 
@@ -133,7 +133,7 @@ function dibujar() {
     else if (y + dy >= canvas.height - radioPelota) {
 
         if (x > posicionXPaleta && x < posicionXPaleta + largoPaleta) {
-            dy = -dy
+            dy = -1.25*dy
         }
         else {
             /* alert("GAME OVER"); */
